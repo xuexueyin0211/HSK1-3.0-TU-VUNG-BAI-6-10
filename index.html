@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>看图写词语游戏</title>
+
+<style>
+body{
+    font-family:"Microsoft YaHei",sans-serif;
+    background:#f0f8ff;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    color:#333;
+}
+
+.game-box{
+    background:white;
+    max-width:700px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+img{
+    width:300px;
+    height:300px;
+    object-fit:cover;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+input{
+    width:250px;
+    padding:12px;
+    font-size:22px;
+    text-align:center;
+    border:2px solid #ccc;
+    border-radius:10px;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#43a047;
+}
+
+.result{
+    margin-top:20px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.score{
+    margin-top:15px;
+    font-size:20px;
+    color:#333;
+}
+</style>
+</head>
+
+<body>
+
+<h1>看图写词语</h1>
+
+<div class="game-box">
+
+    <img id="image" src="" alt="image">
+
+    <div>
+        <input type="text" id="answer" placeholder="请输入中文">
+    </div>
+
+    <button onclick="checkAnswer()">检查答案</button>
+
+    <div class="result" id="result"></div>
+
+    <div class="score" id="score">
+        得分：0 / 0
+    </div>
+
+</div>
+
+<script>
+
+const words = [
+
+{
+    word:"手机",
+    image:"https://imgservice.suning.cn/uimg1/b2c/image/ZgFGayPPuhfZqFuDhNShYw.jpg"
+},
+
+{
+    word:"超市",
+    image:"https://img2.chinadaily.com.cn/images/202003/04/5e5f395da310128206586225.jpeg"
+},
+
+{
+    word:"牛奶",
+    image:"https://blog.vitabox.com.tw/wp-content/uploads/2017/09/milk-e1505901902606.jpg"
+},
+
+{
+    word:"包子",
+    image:"https://p9.itc.cn/images01/20210512/e1606b80ce684e1c8a67422be6721200.jpeg"
+},
+
+
+{
+    word:"米饭",
+    image:"https://img-rs.lifetimes.cn/dp/api/files/imageDir/e3c5f77580997224d08e67f92bf35537u5.jpg"
+},
+
+
+{
+    word:"出租车",
+    image:"https://helloartsy.com/wp-content/uploads/cars/draw-a-taxi/draw-a-taxi.jpg"
+},
+
+{
+    word:"晚上",
+    image:"https://blog.niceday.tw/wp-content/uploads/2017/04/%E5%A4%9C%E8%B2%93%E7%85%A7%E7%89%87-2.jpg"
+},
+
+{
+    word:"电影院",
+    image:"https://jianhua.sgp1.cdn.digitaloceanspaces.com/2024/11/907fd421.jpg"
+},
+
+{
+    word:"医院",
+    image:"https://www.jove.com/files/media/science-education/science-education-thumbs/12973.jpg"
+},
+
+{
+    word:"房间",
+    image:"https://5b0988e595225.cdn.sohucs.com/images/20200402/396e3f6e69e74361b8836619e554bc5e.jpeg"
+},
+
+{
+    word:"猫",
+    image:"https://page.mkgr.jp/ownedmedia/wordpress/wp-content/uploads/2023/11/image1-1.jpg"
+},
+
+{
+    word:"狗",
+    image:"https://hearingaction.com/blog/data/fashion-cultures/dogs-hearing/main.png"
+},
+
+{
+    word:"桌子",
+    image:"https://cdn-website.e2say.com/Resource/Upload/2018-03-23/Article/6365742617230622562656072.jpg"
+},
+
+{
+    word:"学校",
+    image:"https://pic.616pic.com/ys_bnew_img/00/29/23/d1uAGSxLb7.jpg"
+},
+
+{
+    word:"书店",
+    image:"https://pic.pngsucai.com/00/77/90/02f9d649373bbad8.webp"
+},
+
+{
+    word:"病人",
+    image:"https://img.pikbest.com/png-images/qiantu/sick-patient-cartoon-image-illustration_2718936.png!sw800"
+},
+
+{
+    word:"医生",
+    image:"https://pic.pngsucai.com/00/90/48/8eda447848959ff9.webp"
+},
+
+{
+    word:"书",
+    image:"https://www.shutterstock.com/image-vector/colorful-cartoon-illustration-neat-stack-600nw-2722106511.jpg"
+},
+
+{
+    word:"唱",
+    image:"https://img.freepik.com/premium-vector/group-cheerful-cartoon-children-sing-karaoke_657438-15962.jpg"
+},
+
+{
+    word:"电视",
+    image:"https://img.freepik.com/premium-vector/cartoon-drawing-tv-with-blue-screen-picture-tv-it_730620-841771.jpg"
+},
+
+{
+    word:"杯子",
+    image:"https://pic1.ntimg.cn/pic/20241107/35479210_141705315135_4.jpg"
+},
+
+{
+    word:"玩",
+    image:"https://pic.616pic.com/ys_bnew_img/00/50/65/0WIgyIii1B.jpg"
+},
+
+{
+    word:"售货员",
+    image:"https://pic.616pic.com/ys_bnew_img/00/11/98/OBh1zjP3Dk.jpg"
+},
+
+{
+    word:"水果",
+    image:"https://img.freepik.com/premium-vector/kawaii-cute-fruit-cartoon-collection-adorable-handdrawn-fruit-illustrations_6997-4680.jpg"
+},
+
+{
+    word:"苹果",
+    image:"https://img.redocn.com/sheji/20231226/katongsigepingguosucai_13201638.jpg"
+},
+
+{
+    word:"商店",
+    image:"https://pic.pngsucai.com/00/91/36/c8bbbfdd94347910.webp"
+},
+
+{
+    word:"衣服",
+    image:"https://pic.616pic.com/ys_bnew_img/00/37/70/oDWy4wjw0b.jpg"
+}
+
+];
+
+let current = 0;
+let correct = 0;
+
+function shuffle(array){
+    return array.sort(() => Math.random() - 0.5);
+}
+
+shuffle(words);
+
+const image = document.getElementById("image");
+const answer = document.getElementById("answer");
+const result = document.getElementById("result");
+const score = document.getElementById("score");
+
+function loadQuestion(){
+
+    image.src = words[current].image;
+
+    answer.value = "";
+
+    result.innerText = "";
+
+}
+
+function checkAnswer(){
+
+    const userAnswer = answer.value.trim();
+
+    if(userAnswer === words[current].word){
+
+        result.innerText = "✅ 正确！";
+        result.style.color = "green";
+
+        correct++;
+
+    }else{
+
+        result.innerText = "❌ 错误！正确答案：" + words[current].word;
+        result.style.color = "red";
+
+    }
+
+    current++;
+
+    score.innerText = `得分：${correct} / ${current}`;
+
+    if(current < words.length){
+
+        setTimeout(loadQuestion,1000);
+
+    }else{
+
+        setTimeout(()=>{
+
+            image.style.display = "none";
+            answer.style.display = "none";
+
+            result.innerText = `游戏结束！你答对了 ${correct} / ${words.length}`;
+
+        },1000);
+
+    }
+
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
